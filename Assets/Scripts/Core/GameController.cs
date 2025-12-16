@@ -26,7 +26,6 @@ public class GameController : MonoBehaviour
         matchFinder = new MatchFinder(grid);
         inputHandler = new InputHandler(grid, fieldView);
 
-        fieldView.OnBlockClicked += inputHandler.OnBlockClicked;
         inputHandler.OnMoveCompleted += OnMoveCompleted;
     }
     private void CheckMatches()
@@ -40,7 +39,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void OnMoveCompleted(BlockView a, BlockView b)
+    private void OnMoveCompleted(Cell a, Cell b)
     {
         var matches = matchFinder.FindMatches();
 
@@ -70,23 +69,33 @@ public class GameController : MonoBehaviour
     }
 
     private System.Collections.IEnumerator RevertMoveAfterDelay(
-                                                                BlockView a,
-                                                                BlockView b,
-                                                                float delay)
+                                                        Cell a,
+                                                        Cell b,
+                                                        float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        Cell cellA = a.Cell;
-        Cell cellB = b.Cell;
+        grid.SwapBlocks(a, b);
 
-        grid.SwapBlocks(cellA, cellB);
+        fieldView.SwapVisual(a, b);
 
-        a.UpdateCell(cellB);
-        b.UpdateCell(cellA);
-
-        fieldView.UpdateBlockPosition(a);
-        fieldView.UpdateBlockPosition(b);
         inputHandler.UnlockInput();
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (Camera.main == null)
+            {
+                return;
+            }
+
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            worldPos.z = 0; 
+
+            inputHandler.OnPointerClick(worldPos);
+        }
     }
 
 

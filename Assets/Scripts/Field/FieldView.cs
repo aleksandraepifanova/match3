@@ -122,6 +122,21 @@ public class FieldView : MonoBehaviour
             }
         }
     }
+    public void HighlightCell(Cell cell)
+    {
+        if (views.TryGetValue(cell, out var view))
+        {
+            view.transform.localScale = Vector3.one * 1.1f;
+        }
+    }
+
+    public void UnhighlightCell(Cell cell)
+    {
+        if (views.TryGetValue(cell, out var view))
+        {
+            view.transform.localScale = Vector3.one;
+        }
+    }
 
     public void SwapBlockViews(Cell cellA, Cell cellB, BlockView a, BlockView b)
     {
@@ -132,6 +147,41 @@ public class FieldView : MonoBehaviour
     public void RebindBlockView(Cell cell, BlockView view)
     {
         views[cell] = view;
+    }
+    public Cell GetCellFromWorldPosition(Vector3 worldPos)
+    {
+        Vector3 localPos = transform.InverseTransformPoint(worldPos);
+
+        int x = Mathf.RoundToInt(localPos.x / cellSize);
+        int y = Mathf.RoundToInt(localPos.y / cellSize);
+
+        if (x < 0 || x >= grid.Width || y < 0 || y >= grid.Height)
+            return null;
+
+        return grid.GetCell(x, y);
+    }
+
+    public void SwapVisual(Cell a, Cell b)
+    {
+        views.TryGetValue(a, out var viewA);
+        views.TryGetValue(b, out var viewB);
+
+        // 1) Обновляем mapping
+        if (viewA != null) views[b] = viewA; else views.Remove(b);
+        if (viewB != null) views[a] = viewB; else views.Remove(a);
+
+        // 2) Обновляем ссылки и позиции у существующих view
+        if (viewA != null)
+        {
+            viewA.UpdateCell(b);
+            UpdateBlockPosition(viewA);
+        }
+
+        if (viewB != null)
+        {
+            viewB.UpdateCell(a);
+            UpdateBlockPosition(viewB);
+        }
     }
 
 }

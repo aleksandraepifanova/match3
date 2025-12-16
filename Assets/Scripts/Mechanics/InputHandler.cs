@@ -6,71 +6,61 @@ public class InputHandler
     private BlockView selectedBlock;
     private Grid grid;
     private FieldView fieldView;
+    private Cell selectedCell;
     private bool inputLocked;
 
-    public Action<BlockView, BlockView> OnMoveCompleted;
+    public Action<Cell, Cell> OnMoveCompleted;
 
     public InputHandler(Grid grid, FieldView fieldView)
     {
         this.grid = grid;
         this.fieldView = fieldView;
     }
-
-    public void OnBlockClicked(BlockView block)
+    
+    private void TryMove(Cell fromCell, Cell toCell)
     {
-        if (inputLocked)
-            return;
-
-        if (selectedBlock == null)
-        {
-            Select(block);
-        }
-        else
-        {
-            TryMove(selectedBlock, block);
-            Deselect();
-        }
-    }
-
-    private void Select(BlockView block)
-    {
-        selectedBlock = block;
-        block.transform.localScale = Vector3.one * 1.1f;
-    }
-
-    private void Deselect()
-    {
-        if (selectedBlock != null)
-            selectedBlock.transform.localScale = Vector3.one;
-
-        selectedBlock = null;
-    }
-
-    private void TryMove(BlockView from, BlockView to)
-    {
-        Cell fromCell = from.Cell;
-        Cell toCell = to.Cell;
-
         if (!grid.AreNeighbours(fromCell, toCell))
             return;
 
         grid.SwapBlocks(fromCell, toCell);
 
-        from.UpdateCell(toCell);
-        to.UpdateCell(fromCell);
-
-        fieldView.RebindBlockView(toCell, from);
-        fieldView.RebindBlockView(fromCell, to);
-
-        fieldView.UpdateBlockPosition(from);
-        fieldView.UpdateBlockPosition(to);
+        fieldView.SwapVisual(fromCell, toCell);
 
         inputLocked = true;
-        OnMoveCompleted?.Invoke(from, to);
+        OnMoveCompleted?.Invoke(fromCell, toCell);
     }
+
 
     public void UnlockInput()
     {
         inputLocked = false;
     }
+    public void OnPointerClick(Vector3 worldPos)
+    {
+        if (inputLocked)
+            return;
+
+        Cell clickedCell = fieldView.GetCellFromWorldPosition(worldPos);
+        if (clickedCell == null)
+            return;
+
+        HandleCellClick(clickedCell);
+    }
+    private void HandleCellClick(Cell cell)
+    {
+        if (selectedCell == null)
+        {
+            if (cell.IsEmpty)
+                return;
+
+            selectedCell = cell;
+            fieldView.HighlightCell(cell);
+            return;
+        }
+
+        fieldView.UnhighlightCell(selectedCell);
+        TryMove(selectedCell, cell);
+        selectedCell = null;
+    }
+
 }
