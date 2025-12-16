@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class FieldView : MonoBehaviour
@@ -5,6 +6,8 @@ public class FieldView : MonoBehaviour
     [SerializeField] private BlockView blockPrefab;
     [SerializeField] private Sprite blueSprite;
     [SerializeField] private Sprite orangeSprite;
+
+    public Action<BlockView> OnBlockClicked;
 
     private Grid grid;
 
@@ -28,8 +31,15 @@ public class FieldView : MonoBehaviour
 
                 blockView.Init(cell);
                 blockView.SetSprite(GetSprite(cell.Block.Type));
+
+                blockView.OnClicked += HandleBlockClicked;
             }
         }
+    }
+
+    private void HandleBlockClicked(BlockView blockView)
+    {
+        OnBlockClicked?.Invoke(blockView);
     }
 
     private Sprite GetSprite(BlockType type)
