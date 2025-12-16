@@ -77,4 +77,27 @@ public class Grid
         return below;
     }
 
+    public bool HasFallingBlocks()
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 1; y < Height; y++)
+            {
+                Cell cell = GetCell(x, y);
+                if (CanFall(cell))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public bool HasAnyBlocks()
+    {
+        for (int x = 0; x < Width; x++)
+            for (int y = 0; y < Height; y++)
+                if (!GetCell(x, y).IsEmpty)
+                    return true;
+
+        return false;
+    }
 }

@@ -4,6 +4,10 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private FieldView fieldView;
+    [SerializeField] private int firstLevelIndex = 1;
+    [SerializeField] private int lastLevelIndex = 3;
+
+    private int currentLevelIndex;
 
     private Grid grid;
     private InputHandler inputHandler;
@@ -11,21 +15,19 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        //var grid = new Grid(7, 7);
-        grid = new Grid(5, 2);
+        currentLevelIndex = firstLevelIndex;
+        LoadLevel(currentLevelIndex);
+    }
 
-        grid.GetCell(0, 1).Block = new Block(BlockType.Blue);
-        grid.GetCell(2, 1).Block = new Block(BlockType.Orange);
-        grid.GetCell(0, 0).Block = new Block(BlockType.Blue);
-        grid.GetCell(2, 0).Block = new Block(BlockType.Blue);
-        grid.GetCell(3, 0).Block = new Block(BlockType.Orange);
-        grid.GetCell(4, 0).Block = new Block(BlockType.Orange);
+    private void LoadLevel(int index)
+    {
+        var levelData = LevelLoader.Load(index);
+        grid = LevelFactory.CreateGrid(levelData);
 
         fieldView.Init(grid);
 
         matchFinder = new MatchFinder(grid);
         inputHandler = new InputHandler(grid, fieldView);
-
         inputHandler.OnMoveCompleted += OnMoveCompleted;
     }
     private void CheckMatches()
@@ -127,4 +129,15 @@ public class GameController : MonoBehaviour
         } while (anyFell);
     }
 
+    private void CheckLevelCompleted()
+    {
+        if (!grid.HasAnyBlocks())
+        {
+            currentLevelIndex++;
+            if (currentLevelIndex > lastLevelIndex)
+                currentLevelIndex = firstLevelIndex;
+
+            LoadLevel(currentLevelIndex);
+        }
+    }
 }
