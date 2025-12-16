@@ -30,32 +30,50 @@ public class GameController : MonoBehaviour
         inputHandler = new InputHandler(grid, fieldView);
         inputHandler.OnMoveCompleted += OnMoveCompleted;
     }
-    private void CheckMatches()
-    {
-        var matches = matchFinder.FindMatches();
-
-        foreach (var area in matches)
-        {
-            grid.RemoveBlocks(area);
-            fieldView.RemoveBlocks(area);
-        }
-    }
 
     private void OnMoveCompleted(Cell a, Cell b)
     {
-        ApplyLocalGravity();
-
-        var matches = matchFinder.FindMatches();
-
-        if (matches.Count > 0)
-        {
-            StartCoroutine(RemoveMatchesAfterDelay(matches, 1f));
-        }
-        else
-        {
-            StartCoroutine(RevertMoveAfterDelay(a, b, 1f));
-        }
+        StartCoroutine(RunNormalization());
     }
+
+    private System.Collections.IEnumerator RunNormalization()
+    {
+        inputHandler.LockInput();
+
+        bool changed;
+
+        do
+        {
+            changed = false;
+
+            if (grid.HasFallingBlocks())
+            {
+                ApplyLocalGravity();
+                changed = true;
+                yield return new WaitForSeconds(0.3f); 
+            }
+
+            var matches = matchFinder.FindMatches();
+            if (matches.Count > 0)
+            {
+                yield return new WaitForSeconds(0.3f);
+
+                foreach (var area in matches)
+                {
+                    grid.RemoveBlocks(area);
+                    fieldView.RemoveBlocks(area);
+                }
+
+                changed = true;
+            }
+
+        } while (changed);
+
+        inputHandler.UnlockInput();
+
+        CheckLevelCompleted();
+    }
+
 
     private System.Collections.IEnumerator RemoveMatchesAfterDelay(
     System.Collections.Generic.List<System.Collections.Generic.List<Cell>> matches,

@@ -166,11 +166,9 @@ public class FieldView : MonoBehaviour
         views.TryGetValue(a, out var viewA);
         views.TryGetValue(b, out var viewB);
 
-        // 1) Обновляем mapping
         if (viewA != null) views[b] = viewA; else views.Remove(b);
         if (viewB != null) views[a] = viewB; else views.Remove(a);
 
-        // 2) Обновляем ссылки и позиции у существующих view
         if (viewA != null)
         {
             viewA.UpdateCell(b);

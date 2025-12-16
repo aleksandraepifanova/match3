@@ -35,6 +35,10 @@ public class InputHandler
     {
         inputLocked = false;
     }
+    public void LockInput()
+    {
+        inputLocked = true;
+    }
     public void OnPointerClick(Vector3 worldPos)
     {
         if (inputLocked)
