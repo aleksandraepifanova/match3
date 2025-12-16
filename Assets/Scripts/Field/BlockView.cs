@@ -21,7 +21,6 @@ public class BlockView : MonoBehaviour
     public void UpdateCell(Cell newCell)
     {
         Cell = newCell;
-        transform.localPosition = new Vector3(newCell.Position.x, newCell.Position.y, 0);
     }
 
     private void OnMouseDown()

@@ -51,5 +51,8 @@ public class InputHandler
 
         from.UpdateCell(toCell);
         to.UpdateCell(fromCell);
+
+        fieldView.UpdateBlockPosition(from);
+        fieldView.UpdateBlockPosition(to);
     }
 }

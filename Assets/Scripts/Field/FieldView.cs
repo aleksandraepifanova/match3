@@ -6,6 +6,7 @@ public class FieldView : MonoBehaviour
     [SerializeField] private BlockView blockPrefab;
     [SerializeField] private Sprite blueSprite;
     [SerializeField] private Sprite orangeSprite;
+    [SerializeField] private float cellSize = 2f;
 
     public Action<BlockView> OnBlockClicked;
 
@@ -14,7 +15,32 @@ public class FieldView : MonoBehaviour
     public void Init(Grid grid)
     {
         this.grid = grid;
+
+        CalculateCellSize();
+        CenterField();
         DrawField();
+    }
+
+    private void CalculateCellSize()
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        float screenHeight = cam.orthographicSize * 2f;
+        float screenWidth = screenHeight * cam.aspect;
+
+        float cellSizeX = screenWidth / grid.Width;
+        float cellSizeY = screenHeight / grid.Height;
+
+        cellSize = Mathf.Min(cellSizeX, cellSizeY);
+    }
+
+    private void CenterField()
+    {
+        float offsetX = (grid.Width - 1) * cellSize * 0.5f;
+        float offsetY = (grid.Height - 1) * cellSize * 0.5f;
+
+        transform.localPosition = new Vector3(-offsetX, -offsetY, 0);
     }
 
     private void DrawField()
@@ -27,7 +53,12 @@ public class FieldView : MonoBehaviour
                 if (cell.IsEmpty) continue;
 
                 var blockView = Instantiate(blockPrefab, transform);
-                blockView.transform.localPosition = new Vector3(x, y, 0);
+                blockView.transform.localPosition =
+                                            new Vector3(
+                                                cell.Position.x * cellSize,
+                                                cell.Position.y * cellSize,
+                                                0
+                                            );
 
                 blockView.Init(cell);
                 blockView.SetSprite(GetSprite(cell.Block.Type));
@@ -50,5 +81,15 @@ public class FieldView : MonoBehaviour
             BlockType.Orange => orangeSprite,
             _ => null
         };
+    }
+    public void UpdateBlockPosition(BlockView blockView)
+    {
+        Cell cell = blockView.Cell;
+
+        blockView.transform.localPosition = new Vector3(
+            cell.Position.x * cellSize,
+            cell.Position.y * cellSize,
+            0
+        );
     }
 }
