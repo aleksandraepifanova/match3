@@ -71,9 +71,17 @@ public class GameController : MonoBehaviour
 
         inputHandler.UnlockInput();
 
+        ResetNewFlags();
         CheckLevelCompleted();
     }
 
+    private void ResetNewFlags()
+    {
+        for (int x = 0; x < grid.Width; x++)
+            for (int y = 0; y < grid.Height; y++)
+                if (!grid.GetCell(x, y).IsEmpty)
+                    grid.GetCell(x, y).Block.IsNew = false;
+    }
 
     private System.Collections.IEnumerator RemoveMatchesAfterDelay(
     System.Collections.Generic.List<System.Collections.Generic.List<Cell>> matches,

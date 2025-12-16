@@ -12,8 +12,18 @@ public static class LevelFactory
             for (int x = 0; x < data.width; x++)
             {
                 char c = line[x];
-                if (c == 'B') grid.GetCell(x, y).Block = new Block(BlockType.Blue);
-                else if (c == 'O') grid.GetCell(x, y).Block = new Block(BlockType.Orange);
+                if (c == 'B')
+                {
+                    var block = new Block(BlockType.Blue);
+                    block.IsNew = false;
+                    grid.GetCell(x, y).Block = block;
+                }
+                else if (c == 'O')
+                {
+                    var block = new Block(BlockType.Orange);
+                    block.IsNew = false;
+                    grid.GetCell(x, y).Block = block;
+                }
             }
         }
 

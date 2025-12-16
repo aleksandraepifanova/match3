@@ -26,7 +26,7 @@ public class MatchFinder
                     continue;
 
                 List<Cell> area = CollectArea(cell, visited);
-                if (area.Count >= 3)
+                if (area.Count >= 3 && AreaHasNewBlock(area))
                 {
                     result.Add(area);
                 }
@@ -34,6 +34,16 @@ public class MatchFinder
         }
 
         return result;
+    }
+
+    private bool AreaHasNewBlock(List<Cell> area)
+    {
+        foreach (var cell in area)
+        {
+            if (cell.Block != null && cell.Block.IsNew)
+                return true;
+        }
+        return false;
     }
 
     private List<Cell> CollectArea(Cell start, bool[,] visited)

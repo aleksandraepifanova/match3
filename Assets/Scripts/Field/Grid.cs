@@ -42,6 +42,11 @@ public class Grid
         Block temp = a.Block;
         a.Block = b.Block;
         b.Block = temp;
+        if (a.Block != null)
+            a.Block.IsNew = true;
+
+        if (b.Block != null)
+            b.Block.IsNew = true;
     }
 
     public void RemoveBlocks(List<Cell> cells)
@@ -73,6 +78,9 @@ public class Grid
 
         below.Block = cell.Block;
         cell.Block = null;
+
+        if (below.Block != null)
+            below.Block.IsNew = true;
 
         return below;
     }
