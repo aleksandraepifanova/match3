@@ -183,5 +183,16 @@ public class FieldView : MonoBehaviour
             UpdateBlockPosition(viewB);
         }
     }
+    public void MoveBlockDown(Cell from, Cell to)
+    {
+        if (!views.TryGetValue(from, out var view))
+            return;
+
+        views.Remove(from);
+        views[to] = view;
+
+        view.UpdateCell(to);
+        UpdateBlockPosition(view);
+    }
 
 }

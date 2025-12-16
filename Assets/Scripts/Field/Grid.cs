@@ -52,4 +52,29 @@ public class Grid
         }
     }
 
+    public bool CanFall(Cell cell)
+    {
+        if (cell.IsEmpty)
+            return false;
+
+        int x = cell.Position.x;
+        int y = cell.Position.y;
+
+        if (y == 0)
+            return false;
+
+        Cell below = GetCell(x, y - 1);
+        return below.IsEmpty;
+    }
+
+    public Cell FallOne(Cell cell)
+    {
+        Cell below = GetCell(cell.Position.x, cell.Position.y - 1);
+
+        below.Block = cell.Block;
+        cell.Block = null;
+
+        return below;
+    }
+
 }

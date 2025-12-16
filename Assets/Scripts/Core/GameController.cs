@@ -41,6 +41,8 @@ public class GameController : MonoBehaviour
 
     private void OnMoveCompleted(Cell a, Cell b)
     {
+        ApplyLocalGravity();
+
         var matches = matchFinder.FindMatches();
 
         if (matches.Count > 0)
@@ -65,6 +67,7 @@ public class GameController : MonoBehaviour
             fieldView.RemoveBlocks(area);
         }
 
+        ApplyLocalGravity();
         inputHandler.UnlockInput();
     }
 
@@ -97,7 +100,31 @@ public class GameController : MonoBehaviour
             inputHandler.OnPointerClick(worldPos);
         }
     }
+    private void ApplyLocalGravity()
+    {
+        bool anyFell;
 
+        do
+        {
+            anyFell = false;
 
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 1; y < grid.Height; y++)
+                {
+                    Cell cell = grid.GetCell(x, y);
+
+                    if (!grid.CanFall(cell))
+                        continue;
+
+                    Cell newCell = grid.FallOne(cell);
+                    fieldView.MoveBlockDown(cell, newCell);
+
+                    anyFell = true;
+                }
+            }
+
+        } while (anyFell);
+    }
 
 }
