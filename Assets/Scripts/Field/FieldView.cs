@@ -26,6 +26,7 @@ public class FieldView : MonoBehaviour
                 var blockView = Instantiate(blockPrefab, transform);
                 blockView.transform.localPosition = new Vector3(x, y, 0);
 
+                blockView.Init(cell);
                 blockView.SetSprite(GetSprite(cell.Block.Type));
             }
         }
