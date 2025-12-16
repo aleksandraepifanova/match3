@@ -3,6 +3,14 @@ using UnityEngine;
 public class InputHandler
 {
     private BlockView selectedBlock;
+    private Grid grid;
+    private FieldView fieldView;
+
+    public InputHandler(Grid grid, FieldView fieldView)
+    {
+        this.grid = grid;
+        this.fieldView = fieldView;
+    }
 
     public void OnBlockClicked(BlockView block)
     {
@@ -33,6 +41,15 @@ public class InputHandler
 
     private void TryMove(BlockView from, BlockView to)
     {
-        
+        Cell fromCell = from.Cell;
+        Cell toCell = to.Cell;
+
+        if (!grid.AreNeighbours(fromCell, toCell))
+            return;
+
+        grid.SwapBlocks(fromCell, toCell);
+
+        from.UpdateCell(toCell);
+        to.UpdateCell(fromCell);
     }
 }
