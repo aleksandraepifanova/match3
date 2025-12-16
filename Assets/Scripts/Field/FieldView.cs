@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FieldView : MonoBehaviour
@@ -10,11 +11,14 @@ public class FieldView : MonoBehaviour
 
     public Action<BlockView> OnBlockClicked;
 
+    private Dictionary<Cell, BlockView> views = new Dictionary<Cell, BlockView>();
+
     private Grid grid;
 
     public void Init(Grid grid)
     {
         this.grid = grid;
+
 
         CalculateCellSize();
         CenterField();
@@ -45,6 +49,13 @@ public class FieldView : MonoBehaviour
 
     private void DrawField()
     {
+        views.Clear();
+
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+        
         for (int x = 0; x < grid.Width; x++)
         {
             for (int y = 0; y < grid.Height; y++)
@@ -62,6 +73,8 @@ public class FieldView : MonoBehaviour
 
                 blockView.Init(cell);
                 blockView.SetSprite(GetSprite(cell.Block.Type));
+
+                views[cell] = blockView;
 
                 blockView.OnClicked += HandleBlockClicked;
             }
@@ -92,4 +105,33 @@ public class FieldView : MonoBehaviour
             0
         );
     }
+
+    public void RemoveBlockView(BlockView blockView)
+    {
+        Destroy(blockView.gameObject);
+    }
+
+    public void RemoveBlocks(List<Cell> cells)
+    {
+        foreach (var cell in cells)
+        {
+            if (views.TryGetValue(cell, out var view))
+            {
+                Destroy(view.gameObject);
+                views.Remove(cell);
+            }
+        }
+    }
+
+    public void SwapBlockViews(Cell cellA, Cell cellB, BlockView a, BlockView b)
+    {
+        views[cellA] = b;
+        views[cellB] = a;
+    }
+
+    public void RebindBlockView(Cell cell, BlockView view)
+    {
+        views[cell] = view;
+    }
+
 }

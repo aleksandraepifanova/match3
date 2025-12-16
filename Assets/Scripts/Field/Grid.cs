@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Grid
@@ -42,4 +43,13 @@ public class Grid
         a.Block = b.Block;
         b.Block = temp;
     }
+
+    public void RemoveBlocks(List<Cell> cells)
+    {
+        foreach (var cell in cells)
+        {
+            cell.Block = null;
+        }
+    }
+
 }

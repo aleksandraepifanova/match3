@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class InputHandler
@@ -5,6 +6,9 @@ public class InputHandler
     private BlockView selectedBlock;
     private Grid grid;
     private FieldView fieldView;
+    private bool inputLocked;
+
+    public Action<BlockView, BlockView> OnMoveCompleted;
 
     public InputHandler(Grid grid, FieldView fieldView)
     {
@@ -14,6 +18,9 @@ public class InputHandler
 
     public void OnBlockClicked(BlockView block)
     {
+        if (inputLocked)
+            return;
+
         if (selectedBlock == null)
         {
             Select(block);
@@ -52,7 +59,18 @@ public class InputHandler
         from.UpdateCell(toCell);
         to.UpdateCell(fromCell);
 
+        fieldView.RebindBlockView(toCell, from);
+        fieldView.RebindBlockView(fromCell, to);
+
         fieldView.UpdateBlockPosition(from);
         fieldView.UpdateBlockPosition(to);
+
+        inputLocked = true;
+        OnMoveCompleted?.Invoke(from, to);
+    }
+
+    public void UnlockInput()
+    {
+        inputLocked = false;
     }
 }
