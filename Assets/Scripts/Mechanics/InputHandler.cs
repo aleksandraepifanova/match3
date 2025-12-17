@@ -58,11 +58,11 @@ public class InputHandler
                 return;
 
             selectedCell = cell;
-            fieldView.HighlightCell(cell);
+            //fieldView.HighlightCell(cell);
             return;
         }
 
-        fieldView.UnhighlightCell(selectedCell);
+        //fieldView.UnhighlightCell(selectedCell);
         TryMove(selectedCell, cell);
         selectedCell = null;
     }

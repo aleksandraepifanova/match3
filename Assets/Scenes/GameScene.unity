@@ -183,7 +183,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -246,7 +246,9 @@ MonoBehaviour:
   blockPrefab: {fileID: 496983947473251984, guid: 830190eabbd6c764594da2e93485fed2, type: 3}
   blueSprite: {fileID: 21300000, guid: ad5f37c277ec16441be979d3d453137d, type: 3}
   orangeSprite: {fileID: 21300000, guid: 02e529055cd436a48a1764509140b8e2, type: 3}
-  cellSize: 1
+  cellSize: 0.9
+  cellPadding: 0.2
+  baseSortingOrder: 10
 --- !u!4 &514783599
 Transform:
   m_ObjectHideFlags: 0

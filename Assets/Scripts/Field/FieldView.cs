@@ -9,8 +9,8 @@ public class FieldView : MonoBehaviour
     [SerializeField] private Sprite blueSprite;
     [SerializeField] private Sprite orangeSprite;
     [SerializeField] private float cellSize = 1f;
-    [SerializeField, Range(0f, 0.3f)]
-    private float cellPadding = 0.1f;
+    [SerializeField] private float cellPadding = 0.1f;
+    [SerializeField] private int baseSortingOrder = 10;
 
     public Action<BlockView> OnBlockClicked;
 
@@ -22,8 +22,8 @@ public class FieldView : MonoBehaviour
     {
         this.grid = grid;
 
-
-        CalculateCellSize();
+        FitCameraToGrid();
+        //CalculateCellSize();
         CenterField();
         DrawField();
     }
@@ -76,12 +76,37 @@ public class FieldView : MonoBehaviour
 
                 blockView.Init(cell);
                 blockView.SetSprite(GetSprite(cell.Block.Type));
+                NormalizeBlockScale(blockView);
+
+                blockView.transform.localPosition = new Vector3(
+                    cell.Position.x * cellSize,
+                    cell.Position.y * cellSize,
+                    0
+                );
+                UpdateSortingOrder(blockView);
 
                 views[cell] = blockView;
 
                 blockView.OnClicked += HandleBlockClicked;
             }
         }
+    }
+
+    private void NormalizeBlockScale(BlockView view)
+    {
+        var sr = view.GetComponent<SpriteRenderer>();
+        if (sr == null || sr.sprite == null)
+            return;
+
+        Sprite sprite = sr.sprite;
+
+        float spritePixels = sprite.rect.width;
+        float ppu = sprite.pixelsPerUnit;
+        float spriteWorldSize = spritePixels / ppu;
+        float targetSize = cellSize * (1f);
+        float scale = (targetSize / spriteWorldSize) * 1.35f;
+
+        view.transform.localScale = Vector3.one * scale;
     }
 
     private void HandleBlockClicked(BlockView blockView)
@@ -109,11 +134,6 @@ public class FieldView : MonoBehaviour
         );
     }
 
-    public void RemoveBlockView(BlockView blockView)
-    {
-        Destroy(blockView.gameObject);
-    }
-
     public IEnumerator RemoveBlocks(List<Cell> cells)
     {
         var viewsToDestroy = new List<BlockView>();
@@ -136,7 +156,7 @@ public class FieldView : MonoBehaviour
     {
         if (views.TryGetValue(cell, out var view))
         {
-            view.transform.localScale = Vector3.one * 1.1f;
+            view.transform.localScale = Vector3.one;
         }
     }
 
@@ -183,12 +203,14 @@ public class FieldView : MonoBehaviour
         {
             viewA.UpdateCell(b);
             UpdateBlockPosition(viewA);
+            UpdateSortingOrder(viewA);
         }
 
         if (viewB != null)
         {
             viewB.UpdateCell(a);
             UpdateBlockPosition(viewB);
+            UpdateSortingOrder(viewB);
         }
     }
     public void MoveBlockDown(Cell from, Cell to)
@@ -201,6 +223,29 @@ public class FieldView : MonoBehaviour
 
         view.UpdateCell(to);
         UpdateBlockPosition(view);
+        UpdateSortingOrder(view);
+    }
+
+    private void UpdateSortingOrder(BlockView view)
+    {
+        var sr = view.GetComponent<SpriteRenderer>();
+        if (sr == null)
+            return;
+
+        sr.sortingOrder = baseSortingOrder + view.Cell.Position.y;
+    }
+    public void FitCameraToGrid()
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        float gridWidth = grid.Width * cellSize;
+        float gridHeight = grid.Height * cellSize;
+
+        float halfHeight = gridHeight / 2f;
+        float halfWidth = gridWidth / cam.aspect / 2f;
+
+        cam.orthographicSize = Mathf.Max(halfHeight, halfWidth);
     }
 
 }

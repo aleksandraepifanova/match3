@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UIElements;
 
 public class BlockView : MonoBehaviour
 {
@@ -54,7 +55,7 @@ public class BlockView : MonoBehaviour
     {
         animator.SetTrigger(DestroyHash);
 
-        yield return new WaitForSeconds(GetDestroyClipLength());
+        yield return new WaitForSeconds(1f);
         Destroy(gameObject);
     }
 

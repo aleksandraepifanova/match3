@@ -50,13 +50,13 @@ public class GameController : MonoBehaviour
             {
                 ApplyLocalGravity();
                 changed = true;
-                yield return new WaitForSeconds(0.3f); 
+                yield return new WaitForSeconds(0.1f); 
             }
 
             var matches = matchFinder.FindMatches();
             if (matches.Count > 0)
             {
-                yield return new WaitForSeconds(0.3f);
+                yield return new WaitForSeconds(0.1f);
 
                 foreach (var area in matches)
                 {
