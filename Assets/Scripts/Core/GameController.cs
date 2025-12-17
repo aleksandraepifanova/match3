@@ -166,4 +166,19 @@ public class GameController : MonoBehaviour
             LoadLevel(currentLevelIndex);
         }
     }
+    public void RestartLevel()
+    {
+        LoadLevel(currentLevelIndex);
+    }
+
+    public void LoadNextLevel()
+    {
+        currentLevelIndex++;
+
+        if (currentLevelIndex > lastLevelIndex)
+            currentLevelIndex = firstLevelIndex;
+
+        LoadLevel(currentLevelIndex);
+    }
+
 }
