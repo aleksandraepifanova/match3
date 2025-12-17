@@ -244,8 +244,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockPrefab: {fileID: 496983947473251984, guid: 830190eabbd6c764594da2e93485fed2, type: 3}
-  blueSprite: {fileID: 21300000, guid: 8b894b646f93b734ea48440fe7334141, type: 3}
-  orangeSprite: {fileID: 21300000, guid: ccf3987f880c5fc469acb6b6ed49ac65, type: 3}
+  blueSprite: {fileID: 21300000, guid: ad5f37c277ec16441be979d3d453137d, type: 3}
+  orangeSprite: {fileID: 21300000, guid: 02e529055cd436a48a1764509140b8e2, type: 3}
+  cellSize: 1
 --- !u!4 &514783599
 Transform:
   m_ObjectHideFlags: 0
@@ -393,6 +394,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fieldView: {fileID: 514783598}
+  firstLevelIndex: 1
+  lastLevelIndex: 3
 --- !u!4 &1523310120
 Transform:
   m_ObjectHideFlags: 0

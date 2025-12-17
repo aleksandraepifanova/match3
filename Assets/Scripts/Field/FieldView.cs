@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,9 @@ public class FieldView : MonoBehaviour
     [SerializeField] private BlockView blockPrefab;
     [SerializeField] private Sprite blueSprite;
     [SerializeField] private Sprite orangeSprite;
-    [SerializeField] private float cellSize = 2f;
+    [SerializeField] private float cellSize = 1f;
+    [SerializeField, Range(0f, 0.3f)]
+    private float cellPadding = 0.1f;
 
     public Action<BlockView> OnBlockClicked;
 
@@ -111,15 +114,22 @@ public class FieldView : MonoBehaviour
         Destroy(blockView.gameObject);
     }
 
-    public void RemoveBlocks(List<Cell> cells)
+    public IEnumerator RemoveBlocks(List<Cell> cells)
     {
+        var viewsToDestroy = new List<BlockView>();
+
         foreach (var cell in cells)
         {
             if (views.TryGetValue(cell, out var view))
             {
-                Destroy(view.gameObject);
+                //Destroy(view.gameObject);
                 views.Remove(cell);
+                viewsToDestroy.Add(view);
             }
+        }
+        foreach (var view in viewsToDestroy)
+        {
+            yield return view.PlayDestroy();
         }
     }
     public void HighlightCell(Cell cell)

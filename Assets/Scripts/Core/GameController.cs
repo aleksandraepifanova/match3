@@ -61,7 +61,7 @@ public class GameController : MonoBehaviour
                 foreach (var area in matches)
                 {
                     grid.RemoveBlocks(area);
-                    fieldView.RemoveBlocks(area);
+                    yield return fieldView.RemoveBlocks(area);
                 }
 
                 changed = true;

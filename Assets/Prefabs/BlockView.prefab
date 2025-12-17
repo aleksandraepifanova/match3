@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7608305749159701928}
   - component: {fileID: 496983947473251984}
   - component: {fileID: -5555814909525212030}
+  - component: {fileID: 5426413249377303416}
   m_Layer: 0
   m_Name: BlockView
   m_TagString: Untagged
@@ -99,6 +100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 7608305749159701928}
+  blueAnimator: {fileID: 22100000, guid: cfc777bc8e86e3b429bdac8c98e66bfe, type: 2}
+  orangeAnimator: {fileID: 22100000, guid: 57b5503693b104f4bb270b44929c64ce, type: 2}
 --- !u!61 &-5555814909525212030
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -144,3 +147,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!95 &5426413249377303416
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3786746100245919464}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 768269ced37be2a4f8270b63c34cf098, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
